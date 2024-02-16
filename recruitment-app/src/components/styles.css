@@ -1,0 +1,21 @@
+.notification {
+    position: fixed;
+    top: 50px; /* Ajusta a posição para ficar centralizado */
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 15px 20px;
+    border-radius: 8px;
+    background-color: rgba(0, 123, 255, 0.9); /* Cor de fundo com menos opacidade */
+    color: #fff;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Adiciona uma sombra suave */
+    animation: fadeInOut 5s ease; /* Adiciona animação de fade in e out */
+  }
+  
+  @keyframes fadeInOut {
+    0%, 100% {
+      opacity: 0; /* Começa e termina com opacidade 0 */
+    }
+    10%, 90% {
+      opacity: 1; /* Mantém opacidade 1 por algum tempo */
+    }
+  }
