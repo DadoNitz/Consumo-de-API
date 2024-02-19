@@ -8,7 +8,7 @@ import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import Snackbar from '@mui/material/Snackbar';
 import MuiAlert from '@mui/material/Alert';
-import './styles.css'; // Arquivo CSS para estilos adicionais
+import './styles.css'; 
 
 const RecruitmentList = () => {
   const [recruitments, setRecruitments] = useState([]);
