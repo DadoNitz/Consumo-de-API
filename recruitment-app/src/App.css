@@ -36,3 +36,46 @@
     transform: rotate(360deg);
   }
 }
+
+.mode-switcher {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  cursor: pointer;
+}
+
+.toggle {
+  width: 60px;
+  height: 30px;
+  background-color: #ccc;
+  border-radius: 15px;
+  transition: all 0.3s ease;
+}
+
+.toggle-light {
+  background-color: #ddd;
+}
+
+.toggle-dark {
+  background-color: #333;
+}
+
+.toggle::after {
+  content: '';
+  position: absolute;
+  width: 26px;
+  height: 26px;
+  background-color: #fff;
+  border-radius: 50%;
+  top: 50%;
+  transform: translateY(-50%);
+  transition: all 0.3s ease;
+}
+
+.toggle-light::after {
+  left: 4px;
+}
+
+.toggle-dark::after {
+  left: calc(100% - 30px);
+}
