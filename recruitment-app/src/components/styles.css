@@ -11,6 +11,16 @@
     animation: fadeInOut 5s ease;
   }
   
+  @media screen and (max-width: 768px) {
+    .notification {
+      padding: 10px 15px;
+    }
+  
+    .deleteButton {
+      padding: 6px 12px;
+    }
+  }
+  
   @keyframes fadeInOut {
     0%, 100% {
       opacity: 0;
@@ -18,4 +28,17 @@
     10%, 90% {
       opacity: 1;
     }
+  }
+  .deleteButton {
+    background-color: #dc3545;
+    color: white; 
+    border: none; 
+    padding: 8px 16px; 
+    border-radius: 4px; 
+    cursor: pointer; 
+    transition: background-color 0.3s; 
+  }
+  
+  .deleteButton:hover {
+    background-color: #c82333; 
   }

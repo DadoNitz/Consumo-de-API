@@ -15,7 +15,7 @@ function App() {
         <div className="mode-switcher" onClick={toggleDarkMode}>
           <div className={`toggle ${darkMode ? 'toggle-dark' : 'toggle-light'}`} />
         </div>
-        <RecruitmentList />
+        <RecruitmentList darkMode={darkMode} toggleDarkMode={toggleDarkMode} />
       </header>
     </div>
   );

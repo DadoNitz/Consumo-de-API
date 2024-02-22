@@ -7,16 +7,11 @@ import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import Snackbar from '@mui/material/Snackbar';
 import MuiAlert from '@mui/material/Alert';
-import { Delete } from '@mui/icons-material';
-import { IconButton } from '@mui/material';
-import DeleteIcon from '@mui/icons-material/Delete';
+import './styles.css'
 
 const RecruitmentList = ({ darkMode }) => {
   const [recruitments, setRecruitments] = useState([]);
   const [gridApi, setGridApi] = useState(null);
-  const [idToDelete, setIdToDelete] = useState('');
-  const [deleteError, setDeleteError] = useState(null);
-  const [editMode, setEditMode] = useState(false);
   const [notification, setNotification] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [pageSize, setPageSize] = useState(10);
@@ -30,8 +25,11 @@ const RecruitmentList = ({ darkMode }) => {
       .then(response => setRecruitments(response.data))
       .catch(error => console.error(error));
   };
-  
+
   const deleteItem = (id) => {
+    const isConfirmed = window.confirm('Tem certeza de que deseja excluir este item?');
+    if (!isConfirmed) return;
+
     axios.delete(`https://localhost:7102/api/Recruitment/${id}`)
       .then(() => {
         const newRecruitments = recruitments.filter(item => item.id !== id);
@@ -101,13 +99,30 @@ const RecruitmentList = ({ darkMode }) => {
       });
   };
   
+  const numericStringComparator = (valueA, valueB, nodeA, nodeB, isInverted) => {
+    const numA = parseInt(valueA.match(/\d+/)[0]);
+    const numB = parseInt(valueB.match(/\d+/)[0]);
+  
+    if (numA === numB) {
+      return 0;
+    } else if (numA < numB) {
+      return -1;
+    } else {
+      return 1;
+    }
+  };
+
   const CustomButtonComponent = (props) => {
-    return <button onClick={() => deleteItem(props.data.id)}></button>;
+    return (
+      <button className="deleteButton" onClick={() => deleteItem(props.data.id)}>
+        Delete
+      </button>
+    );
   };
 
   const columnDefs = [
-    { field: 'Delet', cellRenderer: CustomButtonComponent},
-    { headerName: "Exportador", field: "exportador", editable: true },
+    { field: 'Excluir Item', cellRenderer: CustomButtonComponent},
+    { headerName: "Exportador", field: "exportador", editable: true, comparator: numericStringComparator },
     { headerName: "Importador", field: "importador", editable: true },
     { headerName: "Data de Embarque", field: "dataEmbarque"},
     { headerName: "Previsão de Embarque", field: "previsaoDeEmbarque"},
@@ -125,7 +140,7 @@ const RecruitmentList = ({ darkMode }) => {
     { headerName: "Origem", field: "origem", editable: true },
     { headerName: "Destino", field: "destino", editable: true },
   ]; 
- 
+
   const onGridReady = (params) => {
     setGridApi(params.api);
   };
