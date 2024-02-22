@@ -3,20 +3,23 @@ import { AgGridReact } from 'ag-grid-react';
 import 'ag-grid-community/styles/ag-grid.css';
 import 'ag-grid-community/styles/ag-theme-alpine.css'; 
 import axios from 'axios';
-import { v4 as uuidv4 } from 'uuid';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import Snackbar from '@mui/material/Snackbar';
 import MuiAlert from '@mui/material/Alert';
-import './styles.css'; 
+import { Delete } from '@mui/icons-material';
+import { IconButton } from '@mui/material';
+import DeleteIcon from '@mui/icons-material/Delete';
 
-const RecruitmentList = () => {
+const RecruitmentList = ({ darkMode }) => {
   const [recruitments, setRecruitments] = useState([]);
   const [gridApi, setGridApi] = useState(null);
   const [idToDelete, setIdToDelete] = useState('');
   const [deleteError, setDeleteError] = useState(null);
   const [editMode, setEditMode] = useState(false);
   const [notification, setNotification] = useState(null);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [pageSize, setPageSize] = useState(10);
 
   useEffect(() => {
     fetchData();
@@ -27,16 +30,17 @@ const RecruitmentList = () => {
       .then(response => setRecruitments(response.data))
       .catch(error => console.error(error));
   };
-
+  
   const deleteItem = (id) => {
     axios.delete(`https://localhost:7102/api/Recruitment/${id}`)
       .then(() => {
-        fetchData();
+        const newRecruitments = recruitments.filter(item => item.id !== id);
+        setRecruitments(newRecruitments);
         showNotification('Item excluído com sucesso', 'success');
       })
       .catch(error => {
-        console.error(error);
-        setDeleteError('Ocorreu um erro ao excluir o item.');
+        console.error('Erro ao excluir item:', error);
+        showNotification('Ocorreu um erro ao excluir o item', 'error');
       });
   };
 
@@ -46,7 +50,7 @@ const RecruitmentList = () => {
         axios.put(`https://localhost:7102/api/Recruitment/${item.id}`, item)
           .then(response => {
             console.log(`Item com ID ${item.id} atualizado com sucesso`);
-            showNotification(`Item com ID ${item.id} atualizado com sucesso`, 'success');
+            showNotification(`Itens atualizados com sucesso`, 'success');
           })
           .catch(error => {
             console.error(`Erro ao atualizar item com ID ${item.id}:`, error);
@@ -66,11 +70,7 @@ const RecruitmentList = () => {
   };
 
   const addNewRow = () => {
-    const maxId = recruitments.reduce((max, item) => (item.id > max ? item.id : max), 0);
-    const newId = maxId + 1;
-  
     const newRow = {
-      id: newId,
       exportador: "string",
       importador: "string",
       dataEmbarque: "2024-02-15T19:17:29.892Z",
@@ -100,15 +100,19 @@ const RecruitmentList = () => {
         console.error('Erro ao adicionar nova linha:', error);
       });
   };
+  
+  const CustomButtonComponent = (props) => {
+    return <button onClick={() => deleteItem(props.data.id)}></button>;
+  };
 
   const columnDefs = [
-    { headerName: "ID", field: "id",  editable: true , width: 100, comparator: (a, b) => Number(a) - Number(b) },
+    { field: 'Delet', cellRenderer: CustomButtonComponent},
     { headerName: "Exportador", field: "exportador", editable: true },
     { headerName: "Importador", field: "importador", editable: true },
-    { headerName: "Data de Embarque", field: "dataEmbarque", editable: true },
-    { headerName: "Previsão de Embarque", field: "previsaoDeEmbarque", editable: true },
-    { headerName: "Data de Chegada", field: "dataChegada", editable: true },
-    { headerName: "Previsão de Chegada", field: "previsaoDeChegada", editable: true },
+    { headerName: "Data de Embarque", field: "dataEmbarque"},
+    { headerName: "Previsão de Embarque", field: "previsaoDeEmbarque"},
+    { headerName: "Data de Chegada", field: "dataChegada"},
+    { headerName: "Previsão de Chegada", field: "previsaoDeChegada"},
     { headerName: "DI", field: "di", editable: true },
     { headerName: "Liberado para Faturamento", field: "liberadoParaFaturamento", editable: true },
     { headerName: "Navio", field: "navio", editable: true },
@@ -119,9 +123,9 @@ const RecruitmentList = () => {
     { headerName: "Container", field: "container", editable: true },
     { headerName: "Canal Parametrização", field: "canalParametrizacao", editable: true },
     { headerName: "Origem", field: "origem", editable: true },
-    { headerName: "Destino", field: "destino", editable: true }
-  ];
-
+    { headerName: "Destino", field: "destino", editable: true },
+  ]; 
+ 
   const onGridReady = (params) => {
     setGridApi(params.api);
   };
@@ -133,6 +137,11 @@ const RecruitmentList = () => {
   const handleCloseNotification = () => {
     setNotification(null);
   };
+  
+  const handleSearchTermChange = (event) => {
+    setSearchTerm(event.target.value);
+  };
+
 
   return (
     <div>
@@ -141,12 +150,28 @@ const RecruitmentList = () => {
           {notification?.message}
         </MuiAlert>
       </Snackbar>
-      <div className="ag-theme-alpine-dark" style={{ height: 500, width: 1000 }}>
+      <div>
+        <TextField 
+          label="Pesquisar"
+          value={searchTerm}
+          onChange={handleSearchTermChange}
+          style={{marginTop: '30px', marginBottom: '30px', color: 'white', borderColor: 'white' }}
+          InputLabelProps={{
+            style: { color: 'white' }
+          }}      
+        />
+      </div>
+      <div className={`ag-theme-${darkMode ? 'alpine-dark' : 'alpine'}`} style={{ height: 500, width: 1200 }}>
         <AgGridReact
-          rowData={recruitments}
+          rowData={recruitments.filter(item => 
+            Object.values(item).some(value => 
+              value.toString().toLowerCase().includes(searchTerm.toLowerCase())
+            )
+          )}
           columnDefs={columnDefs}
           pagination={true}
-          paginationPageSize={10}
+          paginationPageSize={pageSize}
+          searchTerm={searchTerm}
           enableSorting={true}
           enableFilter={true}
           onGridReady={onGridReady}
@@ -157,29 +182,8 @@ const RecruitmentList = () => {
         <Button variant="contained" onClick={addNewRow} style={{ marginRight: '10px' }}>Adicionar Nova Linha</Button>
         <Button variant="contained" onClick={saveChanges}>Salvar Alterações</Button>
       </div>
-      <div>
-        <input 
-          type="text" 
-          value={idToDelete} 
-          onChange={(e) => setIdToDelete(e.target.value)} 
-          placeholder="ID para excluir"
-          style={{
-            padding: '9px',
-            borderRadius: '5px',
-            border: '1px solid #ccc',
-            fontSize: '16px',
-            width: '200px',
-            margin: '10px',
-            background: '#333',
-            color: '#fff',
-          }}
-        />
-        <Button  style={{marginTop: '5px' }}variant="contained" color="error" onClick={() => deleteItem(idToDelete)}>Excluir</Button>
-        {deleteError && <p>{deleteError}</p>}
-      </div>
     </div>
-    
   );
-};
+} 
 
 export default RecruitmentList;
