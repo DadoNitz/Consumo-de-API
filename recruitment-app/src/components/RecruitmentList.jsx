@@ -3,7 +3,6 @@ import { AgGridReact } from 'ag-grid-react';
 import 'ag-grid-community/styles/ag-grid.css';
 import 'ag-grid-community/styles/ag-theme-alpine.css'; 
 import axios from 'axios';
-import { v4 as uuidv4 } from 'uuid';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import Snackbar from '@mui/material/Snackbar';
@@ -103,8 +102,13 @@ const RecruitmentList = () => {
         console.error('Erro ao adicionar nova linha:', error);
       });
   };
+  
+  const CustomButtonComponent = (props) => {
+    return <button onClick={() => deleteItem(props.data.id)}></button>;
+  };
 
   const columnDefs = [
+    { field: 'Delet', cellRenderer: CustomButtonComponent},
     { headerName: "Exportador", field: "exportador", editable: true },
     { headerName: "Importador", field: "importador", editable: true },
     { headerName: "Data de Embarque", field: "dataEmbarque"},
@@ -121,9 +125,9 @@ const RecruitmentList = () => {
     { headerName: "Container", field: "container", editable: true },
     { headerName: "Canal Parametrização", field: "canalParametrizacao", editable: true },
     { headerName: "Origem", field: "origem", editable: true },
-    { headerName: "Destino", field: "destino", editable: true }
-  ];
-
+    { headerName: "Destino", field: "destino", editable: true },
+  ]; 
+ 
   const onGridReady = (params) => {
     setGridApi(params.api);
   };
@@ -140,6 +144,7 @@ const RecruitmentList = () => {
     setSearchTerm(event.target.value);
   };
 
+
   return (
     <div>
       <Snackbar open={!!notification} autoHideDuration={6000} onClose={handleCloseNotification}>
@@ -152,7 +157,7 @@ const RecruitmentList = () => {
           label="Pesquisar"
           value={searchTerm}
           onChange={handleSearchTermChange}
-          style={{ marginBottom: '10px', color: 'white', borderColor: 'white' }}
+          style={{marginTop: '80px', marginBottom: '30px', color: 'white', borderColor: 'white' }}
           InputLabelProps={{
             style: { color: 'white' }
           }}      

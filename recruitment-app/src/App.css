@@ -1,5 +1,7 @@
 .App {
   text-align: center;
+  background-color: #ddd;
+  height: 100vh;
 }
 
 .App-logo {
@@ -14,8 +16,6 @@
 }
 
 .App-header {
-  background-color: #282c34;
-  min-height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -50,6 +50,7 @@
   background-color: #ccc;
   border-radius: 15px;
   transition: all 0.3s ease;
+  border: 2px black;
 }
 
 .toggle-light {
@@ -58,6 +59,14 @@
 
 .toggle-dark {
   background-color: #333;
+}
+
+.dark-mode {
+  background-color: #333;
+}
+
+.light-mode {
+  background-color: #ddd;
 }
 
 .toggle::after {
