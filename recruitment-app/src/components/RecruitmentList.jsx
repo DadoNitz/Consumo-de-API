@@ -8,6 +8,7 @@ import Button from '@mui/material/Button';
 import Snackbar from '@mui/material/Snackbar';
 import MuiAlert from '@mui/material/Alert';
 import './styles.css'
+import numericStringComparator from './numericStringComparator';
 
 const RecruitmentList = ({ darkMode }) => {
   const [recruitments, setRecruitments] = useState([]);
@@ -98,19 +99,6 @@ const RecruitmentList = ({ darkMode }) => {
         console.error('Erro ao adicionar nova linha:', error);
       });
   };
-  
-  const numericStringComparator = (valueA, valueB, nodeA, nodeB, isInverted) => {
-    const numA = parseInt(valueA.match(/\d+/)[0]);
-    const numB = parseInt(valueB.match(/\d+/)[0]);
-  
-    if (numA === numB) {
-      return 0;
-    } else if (numA < numB) {
-      return -1;
-    } else {
-      return 1;
-    }
-  };
 
   const CustomButtonComponent = (props) => {
     return (
@@ -157,7 +145,6 @@ const RecruitmentList = ({ darkMode }) => {
     setSearchTerm(event.target.value);
   };
 
-
   return (
     <div>
       <Snackbar open={!!notification} autoHideDuration={6000} onClose={handleCloseNotification}>
@@ -170,7 +157,7 @@ const RecruitmentList = ({ darkMode }) => {
           label="Pesquisar"
           value={searchTerm}
           onChange={handleSearchTermChange}
-          style={{marginTop: '30px', marginBottom: '30px', color: 'white', borderColor: 'white' }}
+          style={{marginTop: '30px', marginBottom: '10px', color: 'white', borderColor: 'white' }}
           InputLabelProps={{
             style: { color: 'white' }
           }}      
