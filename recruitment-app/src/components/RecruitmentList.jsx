@@ -31,6 +31,7 @@ const RecruitmentList = ({ darkMode }) => {
       .catch(error => console.error(error));
   };
   
+  
   const deleteItem = (id) => {
     axios.delete(`https://localhost:7102/api/Recruitment/${id}`)
       .then(() => {
@@ -39,6 +40,8 @@ const RecruitmentList = ({ darkMode }) => {
         showNotification('Item excluído com sucesso', 'success');
       })
       .catch(error => {
+        console.error('Erro ao excluir item:', error);
+        showNotification('Ocorreu um erro ao excluir o item', 'error');
         console.error('Erro ao excluir item:', error);
         showNotification('Ocorreu um erro ao excluir o item', 'error');
       });
@@ -50,6 +53,7 @@ const RecruitmentList = ({ darkMode }) => {
         axios.put(`https://localhost:7102/api/Recruitment/${item.id}`, item)
           .then(response => {
             console.log(`Item com ID ${item.id} atualizado com sucesso`);
+            showNotification(`Itens atualizados com sucesso`, 'success');
             showNotification(`Itens atualizados com sucesso`, 'success');
           })
           .catch(error => {
@@ -107,8 +111,13 @@ const RecruitmentList = ({ darkMode }) => {
 
   const columnDefs = [
     { field: 'Delet', cellRenderer: CustomButtonComponent},
+    { field: 'Delet', cellRenderer: CustomButtonComponent},
     { headerName: "Exportador", field: "exportador", editable: true },
     { headerName: "Importador", field: "importador", editable: true },
+    { headerName: "Data de Embarque", field: "dataEmbarque"},
+    { headerName: "Previsão de Embarque", field: "previsaoDeEmbarque"},
+    { headerName: "Data de Chegada", field: "dataChegada"},
+    { headerName: "Previsão de Chegada", field: "previsaoDeChegada"},
     { headerName: "Data de Embarque", field: "dataEmbarque"},
     { headerName: "Previsão de Embarque", field: "previsaoDeEmbarque"},
     { headerName: "Data de Chegada", field: "dataChegada"},
@@ -141,7 +150,6 @@ const RecruitmentList = ({ darkMode }) => {
   const handleSearchTermChange = (event) => {
     setSearchTerm(event.target.value);
   };
-
 
   return (
     <div>
