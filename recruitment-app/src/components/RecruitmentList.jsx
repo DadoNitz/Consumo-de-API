@@ -7,8 +7,9 @@ import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import Snackbar from '@mui/material/Snackbar';
 import MuiAlert from '@mui/material/Alert';
-import './styles.css'
+import './styles.css';
 import numericStringComparator from './numericStringComparator';
+import FormularioDialog from './form';
 
 const RecruitmentList = ({ darkMode }) => {
   const [recruitments, setRecruitments] = useState([]);
@@ -16,6 +17,7 @@ const RecruitmentList = ({ darkMode }) => {
   const [notification, setNotification] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [pageSize, setPageSize] = useState(10);
+  const [formOpen, setFormOpen] = useState(false);
 
   useEffect(() => {
     fetchData();
@@ -68,36 +70,25 @@ const RecruitmentList = ({ darkMode }) => {
     });
   };
 
-  const addNewRow = () => {
-    const newRow = {
-      exportador: "string",
-      importador: "string",
-      dataEmbarque: "2024-02-15T19:17:29.892Z",
-      previsaoDeEmbarque: "2024-02-15T19:17:29.892Z",
-      dataChegada: "2024-02-15T19:17:29.892Z",
-      previsaoDeChegada: "2024-02-15T19:17:29.892Z",
-      di: "string",
-      navio: "string",
-      master: "string",
-      house: "string",
-      fatura: "string",
-      freteModo: "string",
-      container: "string",
-      canalParametrizacao: "string",
-      origem: "string",
-      destino: "string",
-      liberadoParaFaturamento: "2024-02-15T19:17:29.892Z"
-    };
-  
-    axios.post('https://localhost:7102/api/Recruitment', newRow)
+  const handleFormSubmit = (formData) => {
+    axios.post('https://localhost:7102/api/Recruitment', formData)
       .then(response => {
         console.log('Nova linha adicionada com sucesso:', response.data);
         fetchData();
         showNotification('Nova linha adicionada com sucesso', 'success');
+        setFormOpen(false); // Fechar o formulário após envio
       })
       .catch(error => {
         console.error('Erro ao adicionar nova linha:', error);
       });
+  };
+
+  const addnewitem = () => {
+    setFormOpen(true);
+  };
+
+  const handleFormClose = () => {
+    setFormOpen(false);
   };
 
   const CustomButtonComponent = (props) => {
@@ -152,6 +143,7 @@ const RecruitmentList = ({ darkMode }) => {
           {notification?.message}
         </MuiAlert>
       </Snackbar>
+      {formOpen && <FormularioDialog onClose={handleFormClose} onSubmit={handleFormSubmit} />}
       <div>
         <TextField 
           label="Pesquisar"
@@ -181,11 +173,11 @@ const RecruitmentList = ({ darkMode }) => {
         />
       </div>
       <div>
-        <Button variant="contained" onClick={addNewRow} style={{ marginRight: '10px' }}>Adicionar item</Button>
+        <Button variant="contained" onClick={addnewitem} style={{ marginRight: '10px' }}>Adicionar item</Button>
         <Button variant="contained" onClick={saveChanges}>Salvar Alterações</Button>
       </div>
     </div>
   );
-} 
+};
 
 export default RecruitmentList;
