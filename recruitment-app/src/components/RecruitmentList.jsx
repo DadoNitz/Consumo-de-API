@@ -181,7 +181,7 @@ const RecruitmentList = ({ darkMode }) => {
         />
       </div>
       <div>
-        <Button variant="contained" onClick={addNewRow} style={{ marginRight: '10px' }}>Adicionar Nova Linha</Button>
+        <Button variant="contained" onClick={addNewRow} style={{ marginRight: '10px' }}>Adicionar item</Button>
         <Button variant="contained" onClick={saveChanges}>Salvar Alterações</Button>
       </div>
     </div>
